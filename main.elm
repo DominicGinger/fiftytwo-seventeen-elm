@@ -56,4 +56,7 @@ view model =
         
 subscriptions : Model -> Sub Msg
 subscriptions model =
-   Time.every Time.second (\_ -> Increment)
+  if model.isTiming then
+    Time.every Time.second (\_ -> Increment)
+  else
+    Sub.none
