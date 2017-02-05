@@ -18,7 +18,7 @@ type alias Model =
 
 
 type Msg
-    = Increment
+    = Increment Int
     | PausePlay
     | Reset
 
@@ -31,16 +31,18 @@ init =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Increment ->
-            if
-                (model.isWorkTime && model.value == 52 * 60)
-                    || (not model.isWorkTime && model.value == 17 * 60)
-            then
-                ( { model | value = 0, isWorkTime = not model.isWorkTime }, Cmd.none )
-            else if model.isTiming then
-                ( { model | value = model.value + 60 }, Cmd.none )
-            else
-                ( model, Cmd.none )
+        Increment amount ->
+            let
+                currentTime =
+                    model.value + amount
+            in
+                if
+                    (model.isWorkTime && currentTime >= 52 * 60)
+                        || (not model.isWorkTime && currentTime >= 17 * 60)
+                then
+                    ( { model | value = 0, isWorkTime = not model.isWorkTime }, Cmd.none )
+                else
+                    ( { model | value = currentTime }, Cmd.none )
 
         PausePlay ->
             ( { model | isTiming = not model.isTiming }, Cmd.none )
@@ -87,6 +89,6 @@ view model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     if model.isTiming then
-        Time.every Time.second (\_ -> Increment)
+        Time.every Time.second (\_ -> Increment 600)
     else
         Sub.none
