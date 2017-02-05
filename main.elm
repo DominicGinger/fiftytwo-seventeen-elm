@@ -5,6 +5,7 @@ import Html.Events exposing (onClick)
 import Time exposing (Time)
 
 
+main : Program Never Model Msg
 main =
     program { init = init, view = view, update = update, subscriptions = subscriptions }
 
@@ -32,9 +33,8 @@ update msg model =
     case msg of
         Increment ->
             if
-                ((model.isWorkTime && model.value == 52 * 60)
+                (model.isWorkTime && model.value == 52 * 60)
                     || (not model.isWorkTime && model.value == 17 * 60)
-                )
             then
                 ( { model | value = 0, isWorkTime = not model.isWorkTime }, Cmd.none )
             else if model.isTiming then
