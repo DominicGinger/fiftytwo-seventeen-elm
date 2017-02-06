@@ -69,9 +69,8 @@ view model =
             String.padLeft 2 '0' (toString num)
 
         buttonStyling =
-            [ ( "width", "85px" )
-            , ( "padding", "10px" )
-            , ( "font-size", "20px" )
+            [ ( "padding", "3vh" )
+            , ( "font-size", "8vh" )
             , ( "border", "2px solid black" )
             , ( "margin", "5px" )
             , ( "cursor", "pointer" )
@@ -81,11 +80,11 @@ view model =
         titleMessage =
             if model.isTiming || model.value > 0 then
                 if model.isWorkTime then
-                    h1 [ style [ ( "height", "40px" ), ( "color", "#545454" ) ] ] [ text "WORK" ]
+                    h1 [ style [ ( "font-size", "8vh" ), ( "height", "40px" ), ( "color", "#545454" ) ] ] [ text "WORK" ]
                 else
-                    h1 [ style [ ( "height", "40px" ), ( "color", "#00a4a6" ) ] ] [ text "REST" ]
+                    h1 [ style [ ( "font-size", "8vh" ), ( "height", "40px" ), ( "color", "#00a4a6" ) ] ] [ text "REST" ]
             else
-                h1 [ style [ ( "height", "40px" ) ] ] []
+                h1 [ style [ ( "font-size", "8vh" ), ( "height", "40px" ) ] ] []
 
         playPauseButton =
             if model.isTiming then
@@ -96,11 +95,11 @@ view model =
         div [ style [ ( "text-align", "center" ), ( "font-family", "helvetica, ariel, sans-serif" ) ] ]
             [ div []
                 [ div [] [ titleMessage ]
-                , h2 [ style [ ( "font-size", "72px" ) ] ] [ text (present hours ++ ":" ++ present minutes ++ ":" ++ present seconds) ]
+                , h2 [ style [( "font-size", "14vh" )] ] [ text (present hours ++ ":" ++ present minutes ++ ":" ++ present seconds) ]
                 , playPauseButton
                 , button [ style (( "background-color", "#939393" ) :: buttonStyling), onClick Reset ] [ text "Reset" ]
                 ]
-            , div [ style [ ( "margin-top", "30px" ) ] ]
+            , div [ style [ ( "font-size", "4vh" ), ( "margin-top", "30px" ) ] ]
                 [ p [] [ text ("Work Completed: " ++ toString model.workCount) ]
                 , p [] [ text ("Rest Completed: " ++ toString model.restCount) ]
                 ]
