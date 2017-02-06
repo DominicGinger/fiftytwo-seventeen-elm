@@ -1,7 +1,8 @@
 module Main exposing (..)
 
-import Html exposing (Html, program, div, text, button)
+import Html exposing (Html, program, div, text, button, h1, h2)
 import Html.Events exposing (onClick)
+import Html.Attributes exposing (style)
 import Time exposing (Time)
 
 
@@ -65,30 +66,51 @@ view model =
 
         present num =
             String.padLeft 2 '0' (toString num)
+
+        buttonStyling =
+            [ ( "width", "85px" )
+            , ( "padding", "10px" )
+            , ( "font-size", "20px" )
+            , ( "border", "2px solid black" )
+            , ( "margin", "5px" )
+            , ( "cursor", "pointer" )
+            , ( "color", "white" )
+            ]
+
+        titleStyling =
+            if model.value % 2 == 0 then
+                [ ( "height", "40px" ), ( "color", "red" ) ]
+            else
+                [ ( "height", "40px" ), ( "color", "green" ) ]
+
+        titleMessage =
+            if model.isTiming then
+                if model.isWorkTime then
+                    h1 [ style [ ( "height", "40px" ), ( "color", "#545454" ) ] ] [ text "WORK" ]
+                else
+                    h1 [ style [ ( "height", "40px" ), ( "color", "#00a4a6" ) ] ] [ text "PLAY" ]
+            else
+                h1 [ style [ ( "height", "40px" ) ] ] []
+
+        playPauseButton =
+            if model.isTiming then
+                button [ style (( "background-color", "#f64747" ) :: buttonStyling), onClick PausePlay ] [ text "Pause" ]
+            else
+                button [ style (( "background-color", "#00aa55" ) :: buttonStyling), onClick PausePlay ] [ text "Play" ]
     in
-        div []
+        div [ style [ ( "text-align", "center" ), ( "font-family", "helvetica, ariel, sans-serif" ) ] ]
             [ div []
-                [ text <|
-                    if model.isWorkTime then
-                        "WORK"
-                    else
-                        "PLAY"
+                [ div [] [ titleMessage ]
+                , h2 [ style [ ( "font-size", "72px" ) ] ] [ text (present hours ++ ":" ++ present minutes ++ ":" ++ present seconds) ]
+                , playPauseButton
+                , button [ style (( "background-color", "#939393" ) :: buttonStyling), onClick Reset ] [ text "Reset" ]
                 ]
-            , text (present hours ++ ":" ++ present minutes ++ ":" ++ present seconds)
-            , button [ onClick PausePlay ]
-                [ text <|
-                    if model.isTiming then
-                        "Pause"
-                    else
-                        "Play"
-                ]
-            , button [ onClick Reset ] [ text "Reset" ]
             ]
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     if model.isTiming then
-        Time.every Time.second (\_ -> Increment 600)
+        Time.every Time.second (\_ -> Increment 300)
     else
         Sub.none
