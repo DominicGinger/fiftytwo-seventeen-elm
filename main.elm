@@ -77,14 +77,8 @@ view model =
             , ( "color", "white" )
             ]
 
-        titleStyling =
-            if model.value % 2 == 0 then
-                [ ( "height", "40px" ), ( "color", "red" ) ]
-            else
-                [ ( "height", "40px" ), ( "color", "green" ) ]
-
         titleMessage =
-            if model.isTiming then
+            if model.isTiming || model.value > 0 then
                 if model.isWorkTime then
                     h1 [ style [ ( "height", "40px" ), ( "color", "#545454" ) ] ] [ text "WORK" ]
                 else
