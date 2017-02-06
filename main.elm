@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, program, div, text, button, h1, h2)
+import Html exposing (Html, program, div, text, button, h1, h2, p)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (style)
 import Time exposing (Time)
@@ -15,6 +15,8 @@ type alias Model =
     { value : Int
     , isTiming : Bool
     , isWorkTime : Bool
+    , workCount : Int
+    , restCount : Int
     }
 
 
@@ -26,7 +28,7 @@ type Msg
 
 init : ( Model, Cmd Msg )
 init =
-    ( (Model 0 False True), Cmd.none )
+    ( (Model 0 False True 0 0), Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -37,11 +39,10 @@ update msg model =
                 currentTime =
                     model.value + amount
             in
-                if
-                    (model.isWorkTime && currentTime >= 52 * 60)
-                        || (not model.isWorkTime && currentTime >= 17 * 60)
-                then
-                    ( { model | value = 0, isWorkTime = not model.isWorkTime }, Cmd.none )
+                if (model.isWorkTime && currentTime >= 52 * 60) then
+                    ( { model | value = 0, isWorkTime = False, workCount = model.workCount + 1 }, Cmd.none )
+                else if (not model.isWorkTime && currentTime >= 17 * 60) then
+                    ( { model | value = 0, isWorkTime = True, restCount = model.restCount + 1 }, Cmd.none )
                 else
                     ( { model | value = currentTime }, Cmd.none )
 
@@ -82,7 +83,7 @@ view model =
                 if model.isWorkTime then
                     h1 [ style [ ( "height", "40px" ), ( "color", "#545454" ) ] ] [ text "WORK" ]
                 else
-                    h1 [ style [ ( "height", "40px" ), ( "color", "#00a4a6" ) ] ] [ text "PLAY" ]
+                    h1 [ style [ ( "height", "40px" ), ( "color", "#00a4a6" ) ] ] [ text "REST" ]
             else
                 h1 [ style [ ( "height", "40px" ) ] ] []
 
@@ -98,6 +99,10 @@ view model =
                 , h2 [ style [ ( "font-size", "72px" ) ] ] [ text (present hours ++ ":" ++ present minutes ++ ":" ++ present seconds) ]
                 , playPauseButton
                 , button [ style (( "background-color", "#939393" ) :: buttonStyling), onClick Reset ] [ text "Reset" ]
+                ]
+            , div [ style [ ( "margin-top", "30px" ) ] ]
+                [ p [] [ text ("Work Completed: " ++ toString model.workCount) ]
+                , p [] [ text ("Rest Completed: " ++ toString model.restCount) ]
                 ]
             ]
 
