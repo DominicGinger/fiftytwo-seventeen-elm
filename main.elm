@@ -110,6 +110,6 @@ view model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     if model.isTiming then
-        Time.every Time.second (\_ -> Increment 300)
+        Time.every Time.second (\_ -> Increment 1)
     else
         Sub.none
